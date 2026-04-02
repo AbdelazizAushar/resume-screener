@@ -6,7 +6,8 @@
 _Screenshot coming soon_
 
 ## Features
-- [ ] PDF upload support
+- [x] PDF upload support
+- [x] Raw text input support
 - [ ] Keyword extraction
 - [ ] Semantic similarity score
 - [ ] LLM feedback via Gemini
@@ -17,17 +18,76 @@ _Screenshot coming soon_
 - sentence-transformers
 - spaCy
 - Google Gemini API
+- PyMuPDF
 
 ## Getting Started
 
 ### Prerequisites
-_Coming soon_
+- Python 3.12
+- pip
 
 ### Installation
-_Coming soon_
+
+```bash
+# Clone the repo
+git clone https://github.com/AbdelazizAushar/resume-screener.git
+cd resume-screener
+
+# Create and activate virtual environment
+python -m venv venv
+venv\Scripts\activate  # Windows
+source venv/bin/activate  # Mac/Linux
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Running Locally
+
+```bash
+uvicorn backend.main:app --reload
+```
+
+API will be available at `http://localhost:8000`
+
+### API Endpoints
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| POST | `/analyze` | Analyze resume against job description |
+
+### Testing with Postman
+
+For the `/analyze` endpoint:
+- Set Body to **form-data**
+- Add `job_description` as a text field
+- Add either `resume_text` as a text field or `resume_file` as a file upload
 
 ## Project Structure
-_Coming soon_
+
+```
+resume-screener/
+├── backend/
+│   ├── main.py
+│   ├── routes/
+│   │   └── api.py
+│   ├── services/
+│   │   ├── pdf_parser.py
+│   │   ├── keyword_extractor.py
+│   │   ├── similarity_scorer.py
+│   │   └── llm_feedback.py
+│   └── models/
+│       └── schemas.py
+├── frontend/
+│   └── app.py
+├── .env.example
+├── .gitignore
+├── .gitattributes
+├── LICENSE
+├── requirements.txt
+└── README.md
+```
 
 ## Environment Variables
 _Coming soon_
