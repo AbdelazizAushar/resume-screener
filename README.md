@@ -3,16 +3,19 @@
 > AI-powered resume analysis tool that matches resumes to job descriptions.
 
 ## Demo
+
 _Screenshot coming soon_
 
 ## Features
+
 - [x] PDF upload support
 - [x] Raw text input support
-- [ ] Keyword extraction
+- [x] Keyword extraction
 - [ ] Semantic similarity score
 - [ ] LLM feedback via Gemini
 
 ## Tech Stack
+
 - FastAPI
 - Streamlit
 - sentence-transformers
@@ -23,6 +26,7 @@ _Screenshot coming soon_
 ## Getting Started
 
 ### Prerequisites
+
 - Python 3.12
 - pip
 
@@ -40,6 +44,8 @@ source venv/bin/activate  # Mac/Linux
 
 # Install dependencies
 pip install -r requirements.txt
+
+python -m spacy download en_core_web_sm
 ```
 
 ### Running Locally
@@ -52,14 +58,15 @@ API will be available at `http://localhost:8000`
 
 ### API Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/health` | Health check |
-| POST | `/analyze` | Analyze resume against job description |
+| Method | Endpoint   | Description                            |
+| ------ | ---------- | -------------------------------------- |
+| GET    | `/health`  | Health check                           |
+| POST   | `/analyze` | Analyze resume against job description |
 
 ### Testing with Postman
 
 For the `/analyze` endpoint:
+
 - Set Body to **form-data**
 - Add `job_description` as a text field
 - Add either `resume_text` as a text field or `resume_file` as a file upload
@@ -90,7 +97,9 @@ resume-screener/
 ```
 
 ## Environment Variables
+
 _Coming soon_
 
 ## Deployment
+
 _Coming soon_
