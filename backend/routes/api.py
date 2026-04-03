@@ -2,6 +2,7 @@ from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from typing import Optional
 
 from backend.services.pdf_parser import extract_text_from_pdf
+from backend.services.keyword_extractor import compare_keywords
 
 router = APIRouter()
 
@@ -18,7 +19,6 @@ async def analyze(
             detail="Please provide either resume text or a PDF file.",
         )
 
-    # extract text from pdf (if found)
     if resume_file:
         file_bytes = await resume_file.read()
         try:
@@ -26,8 +26,11 @@ async def analyze(
         except ValueError as e:
             raise HTTPException(status_code=422, detail=str(e))
 
-    # will just return anything now
+    keyword_results = compare_keywords(resume_text, job_description)
+
     return {
         "resume_text": resume_text,
         "job_description": job_description,
+        "matched_skills": keyword_results["matched_skills"],
+        "missing_skills": keyword_results["missing_skills"],
     }
