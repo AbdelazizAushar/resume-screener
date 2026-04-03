@@ -3,6 +3,7 @@ from typing import Optional
 
 from backend.services.pdf_parser import extract_text_from_pdf
 from backend.services.keyword_extractor import compare_keywords
+from backend.services.similarity_scorer import compute_similarity
 
 router = APIRouter()
 
@@ -27,10 +28,12 @@ async def analyze(
             raise HTTPException(status_code=422, detail=str(e))
 
     keyword_results = compare_keywords(resume_text, job_description)
+    similarity_score = compute_similarity(resume_text, job_description)
 
     return {
         "resume_text": resume_text,
         "job_description": job_description,
         "matched_skills": keyword_results["matched_skills"],
         "missing_skills": keyword_results["missing_skills"],
+        "similarity_score": similarity_score,
     }

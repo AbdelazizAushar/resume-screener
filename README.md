@@ -11,7 +11,7 @@ _Screenshot coming soon_
 - [x] PDF upload support
 - [x] Raw text input support
 - [x] Keyword extraction
-- [ ] Semantic similarity score
+- [x] Semantic similarity score
 - [ ] LLM feedback via Gemini
 
 ## Tech Stack
@@ -98,7 +98,16 @@ resume-screener/
 
 ## Environment Variables
 
-_Coming soon_
+Copy `.env.example` to `.env` and fill in your keys:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Description | Required |
+| -------- | ----------- | -------- |
+| `GEMINI_API_KEY` | Google Gemini API key — get one at [aistudio.google.com](https://aistudio.google.com) | Yes |
+| `HF_TOKEN` | Hugging Face token — get one at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) | Optional (suppresses rate limit warnings) |
 
 ## Deployment
 
