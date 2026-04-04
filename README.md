@@ -10,7 +10,7 @@ _Screenshot coming soon_
 
 - [x] PDF upload support
 - [x] Raw text input support
-- [x] Keyword extraction
+- [x] Keyword extraction via ESCO taxonomy
 - [x] Semantic similarity score
 - [x] LLM feedback via Hugging Face Inference API
 - [ ] Streamlit frontend
@@ -20,7 +20,6 @@ _Screenshot coming soon_
 - FastAPI
 - Streamlit
 - sentence-transformers
-- spaCy
 - Hugging Face Inference API
 - PyMuPDF
 
@@ -45,8 +44,6 @@ source venv/bin/activate  # Mac/Linux
 
 # Install dependencies
 pip install -r requirements.txt
-
-python -m spacy download en_core_web_sm
 ```
 
 ### Running Locally
@@ -89,6 +86,8 @@ resume-screener/
 │       └── schemas.py
 ├── frontend/
 │   └── app.py
+├── skills.csv
+├── extra_skills.json
 ├── .env.example
 ├── .gitignore
 ├── .gitattributes
