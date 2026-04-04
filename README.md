@@ -12,7 +12,8 @@ _Screenshot coming soon_
 - [x] Raw text input support
 - [x] Keyword extraction
 - [x] Semantic similarity score
-- [ ] LLM feedback via Gemini
+- [x] LLM feedback via Hugging Face Inference API
+- [ ] Streamlit frontend
 
 ## Tech Stack
 
@@ -20,7 +21,7 @@ _Screenshot coming soon_
 - Streamlit
 - sentence-transformers
 - spaCy
-- Google Gemini API
+- Hugging Face Inference API
 - PyMuPDF
 
 ## Getting Started
@@ -106,8 +107,7 @@ cp .env.example .env
 
 | Variable | Description | Required |
 | -------- | ----------- | -------- |
-| `GEMINI_API_KEY` | Google Gemini API key — get one at [aistudio.google.com](https://aistudio.google.com) | Yes |
-| `HF_TOKEN` | Hugging Face token — get one at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) | Optional (suppresses rate limit warnings) |
+| `HF_TOKEN` | Hugging Face token — get one at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) | Yes |
 
 ## Deployment
 

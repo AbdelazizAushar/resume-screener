@@ -1,11 +1,14 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from typing import Optional
+import logging
 
 from backend.services.pdf_parser import extract_text_from_pdf
 from backend.services.keyword_extractor import compare_keywords
 from backend.services.similarity_scorer import compute_similarity
+from backend.services.llm_feedback import get_llm_feedback
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 @router.post("/analyze")
@@ -30,10 +33,21 @@ async def analyze(
     keyword_results = compare_keywords(resume_text, job_description)
     similarity_score = compute_similarity(resume_text, job_description)
 
+    feedback = None
+    try:
+        feedback = get_llm_feedback(
+            resume_text=resume_text,
+            job_description=job_description,
+            matched_skills=keyword_results["matched_skills"],
+            missing_skills=keyword_results["missing_skills"],
+            similarity_score=similarity_score,
+        )
+    except Exception as e:
+        logger.warning(f"LLM feedback failed: {e}")
+
     return {
-        "resume_text": resume_text,
-        "job_description": job_description,
         "matched_skills": keyword_results["matched_skills"],
         "missing_skills": keyword_results["missing_skills"],
         "similarity_score": similarity_score,
+        "llm_feedback": feedback,
     }
