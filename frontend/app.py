@@ -82,6 +82,7 @@ html, body, [class*="css"] {
 .stTextArea textarea:focus {
     border-color: #111 !important;
     box-shadow: none !important;
+    caret-color: #c0392b !important;
 }
 .stTextArea label { display: none !important; }
 
@@ -100,6 +101,18 @@ html, body, [class*="css"] {
     color: #111 !important;
 }
 .stRadio > label { display: none !important; }
+
+/* ── Radio selected indicator ── */
+.stRadio div[role="radiogroup"] label div[data-testid="stWidgetLabel"] p { color: #111 !important; }
+/* SVG circle fill when selected */
+.stRadio input[type="radio"] + label svg circle:last-child,
+[data-baseweb="radio"] [data-checked="true"] div,
+[data-baseweb="radio"] div:has(> input:checked) ~ div { 
+    background-color: #111 !important; 
+    border-color: #111 !important; 
+}
+[data-baseweb="radio"] [data-checked="true"] svg { fill: #111 !important; }
+[data-baseweb="radio"] svg { color: #111 !important; }
 
 /* ── File uploader ── */
 [data-testid="stFileUploader"] {
@@ -270,8 +283,7 @@ st.markdown("""
 col1, col2 = st.columns(2, gap="large")
 
 with col1:
-    st.markdown('<span class="field-label">Job Description</span>',
-                unsafe_allow_html=True)
+    st.markdown('<span class="field-label">Job Description</span>', unsafe_allow_html=True)
     job_description = st.text_area(
         label="jd",
         placeholder="Paste the job description here…",
@@ -280,8 +292,7 @@ with col1:
     )
 
 with col2:
-    st.markdown('<span class="field-label">Resume</span>',
-                unsafe_allow_html=True)
+    st.markdown('<span class="field-label">Resume</span>', unsafe_allow_html=True)
 
     input_method = st.radio(
         "input_method",
@@ -325,8 +336,9 @@ if analyze:
         st.error("Please upload a PDF resume.")
         st.stop()
 
-    with st.spinner("Analyzing…"):
-        try:
+    status = st.status("Running analysis…", expanded=True)
+    try:
+        with status:
             data = {"job_description": job_description}
             files = {}
 
@@ -337,6 +349,10 @@ if analyze:
                     resume_file.name, resume_file.getvalue(), "application/pdf"
                 )
 
+            st.write("Extracting keywords…")
+            st.write("Computing semantic similarity…")
+            st.write("Generating LLM feedback…")
+
             response = requests.post(
                 f"{API_URL}/analyze",
                 data=data,
@@ -345,20 +361,25 @@ if analyze:
             response.raise_for_status()
             result = response.json()
 
-        except requests.exceptions.ConnectionError:
-            st.error("Cannot connect to the backend at http://localhost:8000")
-            st.stop()
-        except requests.exceptions.HTTPError as e:
-            st.error(f"API error: {e.response.text}")
-            st.stop()
-        except Exception as e:
-            st.error(f"Something went wrong: {e}")
-            st.stop()
+        status.update(label="Analysis complete.", state="complete", expanded=False)
+
+    except requests.exceptions.ConnectionError:
+        status.update(label="Connection failed.", state="error", expanded=False)
+        st.error("Cannot connect to the backend at http://localhost:8000")
+        st.stop()
+    except requests.exceptions.HTTPError as e:
+        status.update(label="Request failed.", state="error", expanded=False)
+        st.error(f"API error: {e.response.text}")
+        st.stop()
+    except Exception as e:
+        status.update(label="Something went wrong.", state="error", expanded=False)
+        st.error(f"{e}")
+        st.stop()
 
     # ── Results ─────────────────────────────────────────────────────────────────
-    score = result.get("similarity_score", 0)
-    matched = result.get("matched_skills", [])
-    missing = result.get("missing_skills", [])
+    score    = result.get("similarity_score", 0)
+    matched  = result.get("matched_skills", [])
+    missing  = result.get("missing_skills", [])
     feedback = result.get("llm_feedback", {})
 
     st.markdown('<hr class="rule-heavy">', unsafe_allow_html=True)
@@ -425,8 +446,7 @@ if analyze:
 
         if feedback.get("suggestions"):
             st.markdown('<hr class="rule">', unsafe_allow_html=True)
-            st.markdown(
-                '<div class="feedback-heading">Suggestions</div>', unsafe_allow_html=True)
+            st.markdown('<div class="feedback-heading">Suggestions</div>', unsafe_allow_html=True)
 
             rows = "".join(
                 f"""<div class="suggestion-row">
@@ -436,3 +456,18 @@ if analyze:
                 for i, s in enumerate(feedback["suggestions"])
             )
             st.markdown(rows, unsafe_allow_html=True)
+
+    # ── Toast + auto-scroll ─────────────────────────────────────────────────
+    st.toast("Analysis ready — results below.", icon=None)
+    st.markdown("""
+    <script>
+        window.setTimeout(function() {
+            const results = window.parent.document.querySelector('[data-testid="stHorizontalBlock"]');
+            if (results) {
+                results.scrollIntoView({ behavior: "smooth", block: "start" });
+            } else {
+                window.parent.scrollTo({ top: window.parent.document.body.scrollHeight, behavior: "smooth" });
+            }
+        }, 300);
+    </script>
+    """, unsafe_allow_html=True)

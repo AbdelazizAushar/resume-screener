@@ -4,7 +4,7 @@
 
 ## Demo
 
-_Screenshot coming soon_
+![Resume Screener](assets/image.png)
 
 ## Features
 
@@ -114,9 +114,9 @@ Copy `.env.example` to `.env` and fill in your keys:
 cp .env.example .env
 ```
 
-| Variable | Description | Required |
-| -------- | ----------- | -------- |
-| `HF_TOKEN` | Hugging Face token — get one at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) | Yes |
+| Variable   | Description                                                                                              | Required |
+| ---------- | -------------------------------------------------------------------------------------------------------- | -------- |
+| `HF_TOKEN` | Hugging Face token — get one at [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens) | Yes      |
 
 ## Deployment
 
