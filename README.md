@@ -13,7 +13,7 @@ _Screenshot coming soon_
 - [x] Keyword extraction via ESCO taxonomy
 - [x] Semantic similarity score
 - [x] LLM feedback via Hugging Face Inference API
-- [ ] Streamlit frontend
+- [x] Streamlit frontend
 
 ## Tech Stack
 
@@ -48,11 +48,21 @@ pip install -r requirements.txt
 
 ### Running Locally
 
+Start the FastAPI backend:
+
 ```bash
 uvicorn backend.main:app --reload
 ```
 
 API will be available at `http://localhost:8000`
+
+In a separate terminal, start the Streamlit frontend:
+
+```bash
+streamlit run frontend/app.py
+```
+
+Frontend will be available at `http://localhost:8501`
 
 ### API Endpoints
 
