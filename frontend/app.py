@@ -104,12 +104,10 @@ html, body, [class*="css"] {
 
 /* ── Radio selected indicator ── */
 .stRadio div[role="radiogroup"] label div[data-testid="stWidgetLabel"] p { color: #111 !important; }
-/* SVG circle fill when selected */
-.stRadio input[type="radio"] + label svg circle:last-child,
 [data-baseweb="radio"] [data-checked="true"] div,
-[data-baseweb="radio"] div:has(> input:checked) ~ div { 
-    background-color: #111 !important; 
-    border-color: #111 !important; 
+[data-baseweb="radio"] div:has(> input:checked) ~ div {
+    background-color: #111 !important;
+    border-color: #111 !important;
 }
 [data-baseweb="radio"] [data-checked="true"] svg { fill: #111 !important; }
 [data-baseweb="radio"] svg { color: #111 !important; }
@@ -140,6 +138,11 @@ html, body, [class*="css"] {
 }
 .stButton > button:hover {
     background-color: #333 !important;
+}
+            
+.stButton > button p,
+.stButton > button span {
+    color: #f7f5f0 !important;
 }
 
 /* ── Divider ── */
@@ -267,6 +270,26 @@ html, body, [class*="css"] {
     line-height: 1.75;
     color: #333;
 }
+
+/* ── Status widget ── */
+[data-testid="stStatusWidget"] p,
+[data-testid="stStatusWidget"] span,
+[data-testid="stStatusWidget"] div,
+[data-testid="stStatus"] p,
+[data-testid="stStatus"] span,
+[data-testid="stMarkdownContainer"] p { color: #111111 !important; }
+
+/* ── Inline error messages ── */
+.inline-error {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: #c0392b;
+    border: 1px solid #c0392b;
+    border-radius: 3px;
+    padding: 0.6rem 0.9rem;
+    margin: 0.5rem 0;
+    background-color: #fff5f5;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -283,7 +306,8 @@ st.markdown("""
 col1, col2 = st.columns(2, gap="large")
 
 with col1:
-    st.markdown('<span class="field-label">Job Description</span>', unsafe_allow_html=True)
+    st.markdown('<span class="field-label">Job Description</span>',
+                unsafe_allow_html=True)
     job_description = st.text_area(
         label="jd",
         placeholder="Paste the job description here…",
@@ -292,7 +316,8 @@ with col1:
     )
 
 with col2:
-    st.markdown('<span class="field-label">Resume</span>', unsafe_allow_html=True)
+    st.markdown('<span class="field-label">Resume</span>',
+                unsafe_allow_html=True)
 
     input_method = st.radio(
         "input_method",
@@ -325,15 +350,22 @@ with btn_col:
     analyze = st.button("Analyze →")
 
 # ── Analysis ────────────────────────────────────────────────────────────────────
+
+
+def show_error(msg):
+    st.markdown(
+        f'<div class="inline-error">{msg}</div>', unsafe_allow_html=True)
+
+
 if analyze:
     if not job_description.strip():
-        st.error("Please enter a job description.")
+        show_error("Please enter a job description.")
         st.stop()
     if input_method == "Paste text" and not resume_text.strip():
-        st.error("Please paste your resume text.")
+        show_error("Please paste your resume text.")
         st.stop()
     if input_method == "Upload PDF" and resume_file is None:
-        st.error("Please upload a PDF resume.")
+        show_error("Please upload a PDF resume.")
         st.stop()
 
     status = st.status("Running analysis…", expanded=True)
@@ -349,9 +381,11 @@ if analyze:
                     resume_file.name, resume_file.getvalue(), "application/pdf"
                 )
 
-            st.write("Extracting keywords…")
-            st.write("Computing semantic similarity…")
-            st.write("Generating LLM feedback…")
+            st.markdown(
+                '<p style="color:#111111;font-family:IBM Plex Mono,monospace;font-size:0.78rem;margin:0.3rem 0;">Extracting keywords…</p>', unsafe_allow_html=True)
+            st.markdown('<p style="color:#111111;font-family:IBM Plex Mono,monospace;font-size:0.78rem;margin:0.3rem 0;">Computing semantic similarity…</p>', unsafe_allow_html=True)
+            st.markdown(
+                '<p style="color:#111111;font-family:IBM Plex Mono,monospace;font-size:0.78rem;margin:0.3rem 0;">Generating LLM feedback…</p>', unsafe_allow_html=True)
 
             response = requests.post(
                 f"{API_URL}/analyze",
@@ -361,25 +395,28 @@ if analyze:
             response.raise_for_status()
             result = response.json()
 
-        status.update(label="Analysis complete.", state="complete", expanded=False)
+        status.update(label="Analysis complete.",
+                      state="complete", expanded=False)
 
     except requests.exceptions.ConnectionError:
-        status.update(label="Connection failed.", state="error", expanded=False)
-        st.error("Cannot connect to the backend at http://localhost:8000")
+        status.update(label="Connection failed.",
+                      state="error", expanded=False)
+        show_error("Cannot connect to the backend at http://localhost:8000")
         st.stop()
     except requests.exceptions.HTTPError as e:
         status.update(label="Request failed.", state="error", expanded=False)
-        st.error(f"API error: {e.response.text}")
+        show_error(f"API error: {e.response.text}")
         st.stop()
     except Exception as e:
-        status.update(label="Something went wrong.", state="error", expanded=False)
-        st.error(f"{e}")
+        status.update(label="Something went wrong.",
+                      state="error", expanded=False)
+        show_error(f"{e}")
         st.stop()
 
     # ── Results ─────────────────────────────────────────────────────────────────
-    score    = result.get("similarity_score", 0)
-    matched  = result.get("matched_skills", [])
-    missing  = result.get("missing_skills", [])
+    score = result.get("similarity_score", 0)
+    matched = result.get("matched_skills", [])
+    missing = result.get("missing_skills", [])
     feedback = result.get("llm_feedback", {})
 
     st.markdown('<hr class="rule-heavy">', unsafe_allow_html=True)
@@ -446,7 +483,8 @@ if analyze:
 
         if feedback.get("suggestions"):
             st.markdown('<hr class="rule">', unsafe_allow_html=True)
-            st.markdown('<div class="feedback-heading">Suggestions</div>', unsafe_allow_html=True)
+            st.markdown(
+                '<div class="feedback-heading">Suggestions</div>', unsafe_allow_html=True)
 
             rows = "".join(
                 f"""<div class="suggestion-row">
