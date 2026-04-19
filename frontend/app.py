@@ -121,6 +121,19 @@ html, body, [class*="css"] {
 }
 [data-testid="stFileUploader"] label { display: none !important; }
 
+/* Keep helper copy muted, but make uploaded file metadata readable */
+[data-testid="stFileUploaderDropzoneInstructions"],
+[data-testid="stFileUploaderDropzoneInstructions"] span,
+[data-testid="stFileUploaderDropzone"] small {
+    color: #b8b4ad !important;
+}
+[data-testid="stFileUploaderFile"],
+[data-testid="stFileUploaderFile"] *,
+[data-testid="stFileUploaderFileName"],
+[data-testid="stFileUploaderFileSize"] {
+    color: #111111 !important;
+}
+
 /* ── Button ── */
 .stButton > button {
     background-color: #111111 !important;
