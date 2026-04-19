@@ -120,4 +120,7 @@ cp .env.example .env
 
 ## Deployment
 
-_Coming soon_
+The app is live on Hugging Face Spaces:
+
+- **Frontend:** https://huggingface.co/spaces/AbdelazizAushar/resume-screener-frontend
+- **Backend:** https://huggingface.co/spaces/AbdelazizAushar/resume-screener-backend
