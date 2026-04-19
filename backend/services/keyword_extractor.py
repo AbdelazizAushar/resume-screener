@@ -3,7 +3,7 @@ import json
 import re
 from pathlib import Path
 
-TAXONOMY_PATH = Path(__file__).parent.parent.parent / "skills_en.csv"
+TAXONOMY_PATH = Path(__file__).parent.parent.parent / "skills.csv"
 EXTRA_SKILLS_PATH = Path(__file__).parent.parent.parent / "extra_skills.json"
 
 _SKILL_SET: set[str] = set()
@@ -36,7 +36,7 @@ def _load_taxonomy() -> set[str]:
 
     if not skills:
         raise FileNotFoundError(
-            "No skill sources found. Please add skills_en.csv"
+            "No skill sources found. Please add skills.csv"
             " and/or extra_skills.json to the project directory."
         )
 
